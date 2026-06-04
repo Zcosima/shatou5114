@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+:root {
+  --cream: #fff8f1;
+  --milk: #fffdf8;
+  --peach: #f7d7c4;
+  --rose: #e96f88;
+  --berry: #d94a66;
+  --apricot: #efb57d;
+  --mint: #93b9a8;
+  --cocoa: #6c554a;
+  --ink: #3b302b;
+  --line: rgba(108, 85, 74, 0.13);
+}
+
+* { box-sizing: border-box; }
+html { background: #f4e4d8; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  background: linear-gradient(180deg, #fff8f1 0%, #f8e8dc 54%, #fffdf8 100%);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+button, input, textarea { font: inherit; }
+button { -webkit-tap-highlight-color: transparent; }
+
+.app-shell {
+  width: min(100vw, 430px);
+  min-height: 100vh;
+  margin: 0 auto;
+  background: rgba(255, 248, 241, 0.86);
+  box-shadow: 0 0 38px rgba(108, 85, 74, 0.14);
+}
+
+.card {
+  border: 1px solid var(--line);
+  background: rgba(255, 253, 248, 0.82);
+  box-shadow: 0 10px 24px rgba(108, 85, 74, 0.08);
+  backdrop-filter: blur(16px);
+}
+
+.safe-bottom { padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+.input {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255,255,255,0.72);
+  padding: 10px 12px;
+  outline: none;
+}
+.input:focus {
+  border-color: rgba(217, 74, 102, 0.42);
+  box-shadow: 0 0 0 3px rgba(233, 111, 136, 0.12);
+}

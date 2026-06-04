@@ -1,0 +1,5 @@
+allowBuilds:
+  tesseract.js: false
+ignoredBuiltDependencies:
+  - sharp
+  - tesseract.js

@@ -34,6 +34,8 @@ const initialMatchForm = (): MatchFormState => ({
   datouTeamPoints: 0,
   mixedDoublesResult: "",
   mixedDoublesPoints: 0,
+  mixedTeamResult: "",
+  mixedTeamPoints: 0,
   notes: "我永远相信中国乒乓球队！\n记录一下自己的五月团体世乒赛观赛历程。",
   photos: []
 });
@@ -529,7 +531,10 @@ function MatchRecordCard({ match, onClick }: { match: MatchRecord; onClick?: () 
     },
     {
       person: "莎头",
-      items: [{ category: "混双", result: match.mixedDoublesResult, points: match.mixedDoublesPoints }]
+      items: [
+        { category: "混双", result: match.mixedDoublesResult, points: match.mixedDoublesPoints },
+        { category: "混团", result: match.mixedTeamResult, points: match.mixedTeamPoints }
+      ]
     }
   ].map((group) => ({ ...group, items: group.items.filter((item) => hasScoreResult(item.result)) })).filter((group) => group.items.length > 0);
 
@@ -625,14 +630,7 @@ function MatchDetail({ match, onBack, onUpdate, onDelete }: { match: MatchRecord
       <div className="grid gap-3">
         <Field label="赛事名称"><input className="input" value={match.eventName} onChange={(event) => patch("eventName", event.target.value)} /></Field>
         <Field label="比赛日期"><input className="input" type="date" value={match.eventDate} onChange={(event) => patch("eventDate", event.target.value)} /></Field>
-        <div className="grid grid-cols-2 gap-3">
-          <Field label="莎莎女单成绩"><input className="input" value={match.shashaSinglesResult} onChange={(event) => patch("shashaSinglesResult", event.target.value)} /></Field>
-          <Field label="莎莎女单积分"><input className="input" type="number" value={match.shashaSinglesPoints} onChange={(event) => patch("shashaSinglesPoints", Number(event.target.value) || 0)} /></Field>
-          <Field label="大头男单成绩"><input className="input" value={match.datouSinglesResult} onChange={(event) => patch("datouSinglesResult", event.target.value)} /></Field>
-          <Field label="大头男单积分"><input className="input" type="number" value={match.datouSinglesPoints} onChange={(event) => patch("datouSinglesPoints", Number(event.target.value) || 0)} /></Field>
-          <Field label="莎头混双成绩"><input className="input" value={match.mixedDoublesResult} onChange={(event) => patch("mixedDoublesResult", event.target.value)} /></Field>
-          <Field label="莎头混双积分"><input className="input" type="number" value={match.mixedDoublesPoints} onChange={(event) => patch("mixedDoublesPoints", Number(event.target.value) || 0)} /></Field>
-        </div>
+        <MatchResultFields record={match} onChange={patch} />
         <Field label="观赛感受"><textarea className="input min-h-28 resize-none" value={match.notes} onChange={(event) => patch("notes", event.target.value)} /></Field>
         <PhotoEditor photos={match.photos} onChange={(photos) => patch("photos", photos)} />
         <div className="rounded-2xl bg-[#fff2e8] px-4 py-3 text-sm font-semibold text-[var(--berry)]">本场积分：+{match.totalMatchPoints}</div>
@@ -665,14 +663,7 @@ function MatchForm({ form, totalMatchPoints, onChange, onSubmit, submitLabel }: 
     <div className="grid gap-3">
       <Field label="赛事名称"><input className="input" value={form.eventName} onChange={(event) => onChange("eventName", event.target.value)} /></Field>
       <Field label="比赛日期"><input className="input" type="date" value={form.eventDate} onChange={(event) => onChange("eventDate", event.target.value)} /></Field>
-      <div className="grid grid-cols-2 gap-3">
-        <Field label="莎莎女单成绩"><input className="input" value={form.shashaSinglesResult} onChange={(event) => onChange("shashaSinglesResult", event.target.value)} /></Field>
-        <Field label="莎莎女单积分"><input className="input" type="number" value={form.shashaSinglesPoints} onChange={(event) => onChange("shashaSinglesPoints", Number(event.target.value) || 0)} /></Field>
-        <Field label="大头男单成绩"><input className="input" value={form.datouSinglesResult} onChange={(event) => onChange("datouSinglesResult", event.target.value)} /></Field>
-        <Field label="大头男单积分"><input className="input" type="number" value={form.datouSinglesPoints} onChange={(event) => onChange("datouSinglesPoints", Number(event.target.value) || 0)} /></Field>
-        <Field label="莎头混双成绩"><input className="input" value={form.mixedDoublesResult} onChange={(event) => onChange("mixedDoublesResult", event.target.value)} /></Field>
-        <Field label="莎头混双积分"><input className="input" type="number" value={form.mixedDoublesPoints} onChange={(event) => onChange("mixedDoublesPoints", Number(event.target.value) || 0)} /></Field>
-      </div>
+      <MatchResultFields record={form} onChange={onChange} />
       <Field label="观赛感受"><textarea className="input min-h-24 resize-none" value={form.notes} onChange={(event) => onChange("notes", event.target.value)} /></Field>
       <PhotoEditor photos={form.photos} onChange={(photos) => onChange("photos", photos)} />
       <div className="rounded-2xl bg-[#fff2e8] px-4 py-3 text-sm font-semibold text-[var(--berry)]">本场积分：+{totalMatchPoints}</div>
@@ -681,6 +672,48 @@ function MatchForm({ form, totalMatchPoints, onChange, onSubmit, submitLabel }: 
   );
 }
 
+type MatchResultEditable = Pick<MatchRecord,
+  "shashaSinglesResult" | "shashaSinglesPoints" |
+  "shashaDoublesResult" | "shashaDoublesPoints" |
+  "shashaTeamResult" | "shashaTeamPoints" |
+  "datouSinglesResult" | "datouSinglesPoints" |
+  "datouDoublesResult" | "datouDoublesPoints" |
+  "datouTeamResult" | "datouTeamPoints" |
+  "mixedDoublesResult" | "mixedDoublesPoints" |
+  "mixedTeamResult" | "mixedTeamPoints"
+>;
+
+function MatchResultFields({ record, onChange }: { record: MatchResultEditable; onChange: (key: keyof MatchResultEditable, value: string | number) => void }) {
+  return (
+    <div className="grid gap-3">
+      <p className="text-sm font-semibold text-[var(--cocoa)]">莎莎</p>
+      <div className="grid grid-cols-2 gap-3">
+        <Field label="女单成绩"><input className="input" value={record.shashaSinglesResult} onChange={(event) => onChange("shashaSinglesResult", event.target.value)} /></Field>
+        <Field label="女单积分"><input className="input" type="number" value={record.shashaSinglesPoints} onChange={(event) => onChange("shashaSinglesPoints", Number(event.target.value) || 0)} /></Field>
+        <Field label="女双成绩"><input className="input" value={record.shashaDoublesResult} onChange={(event) => onChange("shashaDoublesResult", event.target.value)} /></Field>
+        <Field label="女双积分"><input className="input" type="number" value={record.shashaDoublesPoints} onChange={(event) => onChange("shashaDoublesPoints", Number(event.target.value) || 0)} /></Field>
+        <Field label="女团成绩"><input className="input" value={record.shashaTeamResult} onChange={(event) => onChange("shashaTeamResult", event.target.value)} /></Field>
+        <Field label="女团积分"><input className="input" type="number" value={record.shashaTeamPoints} onChange={(event) => onChange("shashaTeamPoints", Number(event.target.value) || 0)} /></Field>
+      </div>
+      <p className="text-sm font-semibold text-[var(--cocoa)]">大头</p>
+      <div className="grid grid-cols-2 gap-3">
+        <Field label="男单成绩"><input className="input" value={record.datouSinglesResult} onChange={(event) => onChange("datouSinglesResult", event.target.value)} /></Field>
+        <Field label="男单积分"><input className="input" type="number" value={record.datouSinglesPoints} onChange={(event) => onChange("datouSinglesPoints", Number(event.target.value) || 0)} /></Field>
+        <Field label="男双成绩"><input className="input" value={record.datouDoublesResult} onChange={(event) => onChange("datouDoublesResult", event.target.value)} /></Field>
+        <Field label="男双积分"><input className="input" type="number" value={record.datouDoublesPoints} onChange={(event) => onChange("datouDoublesPoints", Number(event.target.value) || 0)} /></Field>
+        <Field label="男团成绩"><input className="input" value={record.datouTeamResult} onChange={(event) => onChange("datouTeamResult", event.target.value)} /></Field>
+        <Field label="男团积分"><input className="input" type="number" value={record.datouTeamPoints} onChange={(event) => onChange("datouTeamPoints", Number(event.target.value) || 0)} /></Field>
+      </div>
+      <p className="text-sm font-semibold text-[var(--cocoa)]">莎头</p>
+      <div className="grid grid-cols-2 gap-3">
+        <Field label="混双成绩"><input className="input" value={record.mixedDoublesResult} onChange={(event) => onChange("mixedDoublesResult", event.target.value)} /></Field>
+        <Field label="混双积分"><input className="input" type="number" value={record.mixedDoublesPoints} onChange={(event) => onChange("mixedDoublesPoints", Number(event.target.value) || 0)} /></Field>
+        <Field label="混团成绩"><input className="input" value={record.mixedTeamResult} onChange={(event) => onChange("mixedTeamResult", event.target.value)} /></Field>
+        <Field label="混团积分"><input className="input" type="number" value={record.mixedTeamPoints} onChange={(event) => onChange("mixedTeamPoints", Number(event.target.value) || 0)} /></Field>
+      </div>
+    </div>
+  );
+}
 function MerchForm({ form, onChange, onSubmit }: { form: MerchFormState; onChange: <Key extends keyof MerchFormState>(key: Key, value: MerchFormState[Key]) => void; onSubmit: () => void }) {
   return (
     <div className="grid gap-3">
@@ -954,6 +987,7 @@ function RecognitionResultCard({ draft, onUpdate, onDelete }: { draft: MatchReco
       </div>
       <div className="mt-3">
         <EditableResultField label="莎头混双" result={draft.mixedDoublesResult} points={draft.mixedDoublesPoints} onResult={(value) => patch("mixedDoublesResult", value)} onPoints={(value) => patch("mixedDoublesPoints", value)} />
+        <EditableResultField label="莎头混团" result={draft.mixedTeamResult} points={draft.mixedTeamPoints} onResult={(value) => patch("mixedTeamResult", value)} onPoints={(value) => patch("mixedTeamPoints", value)} />
       </div>
       <Field label="备注"><textarea className="input mt-3 min-h-20 resize-none" value={draft.notes} onChange={(event) => patch("notes", event.target.value)} /></Field>
       <div className="mt-3 rounded-2xl bg-[#fff2e8] px-4 py-3 text-right text-sm font-semibold text-[var(--berry)]">总积分：{draft.totalMatchPoints}</div>

@@ -3,7 +3,7 @@
 type ResultCategory = RawMatchResult["category"];
 type Athlete = RawMatchResult["athlete"];
 
-const categories: ResultCategory[] = ["女单", "女双", "男单", "男双", "混双", "女团", "男团"];
+const categories: ResultCategory[] = ["女单", "女双", "男单", "男双", "混双", "混团", "女团", "男团"];
 const resultWords = ["三十二强", "十六强", "八强", "四强", "季军", "亚军", "冠军"];
 const eventNoiseWords = ["WTT", "国际乒联"];
 
@@ -53,7 +53,7 @@ export function normalizeEventName(eventName: string) {
 }
 
 function inferAthlete(category: ResultCategory, source?: "shasha" | "datou"): Athlete {
-  if (category === "混双") return "mixed";
+  if (category === "混双" || category === "混团") return "mixed";
   if (category.startsWith("女")) return "shasha";
   if (category.startsWith("男")) return "datou";
   return source ?? "mixed";
@@ -109,6 +109,8 @@ function createEmptyRecord(eventName: string, eventDate: string): MatchRecord {
     datouTeamPoints: 0,
     mixedDoublesResult: "",
     mixedDoublesPoints: 0,
+    mixedTeamResult: "",
+    mixedTeamPoints: 0,
     notes: "",
     photos: [],
     totalMatchPoints: 0,

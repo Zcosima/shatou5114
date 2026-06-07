@@ -16,7 +16,7 @@ export type HandbookBackup = {
   };
 };
 
-export function calculateTotalMatchPoints(match: Pick<MatchRecord, "shashaSinglesPoints" | "shashaDoublesPoints" | "shashaTeamPoints" | "datouSinglesPoints" | "datouDoublesPoints" | "datouTeamPoints" | "mixedDoublesPoints">) {
+export function calculateTotalMatchPoints(match: Pick<MatchRecord, "shashaSinglesPoints" | "shashaDoublesPoints" | "shashaTeamPoints" | "datouSinglesPoints" | "datouDoublesPoints" | "datouTeamPoints" | "mixedDoublesPoints" | "mixedTeamPoints">) {
   return (
     Number(match.shashaSinglesPoints || 0) +
     Number(match.shashaDoublesPoints || 0) +
@@ -24,7 +24,8 @@ export function calculateTotalMatchPoints(match: Pick<MatchRecord, "shashaSingle
     Number(match.datouSinglesPoints || 0) +
     Number(match.datouDoublesPoints || 0) +
     Number(match.datouTeamPoints || 0) +
-    Number(match.mixedDoublesPoints || 0)
+    Number(match.mixedDoublesPoints || 0) +
+    Number(match.mixedTeamPoints || 0)
   );
 }
 
@@ -48,6 +49,8 @@ export function createEmptyMatch(): MatchRecord {
     datouTeamPoints: 0,
     mixedDoublesResult: "",
     mixedDoublesPoints: 0,
+    mixedTeamResult: "",
+    mixedTeamPoints: 0,
     notes: "",
     photos: [],
     totalMatchPoints: 0,
@@ -79,6 +82,7 @@ function normalizeMatch(match: MatchRecord): MatchRecord {
     datouDoublesPoints: Number(match.datouDoublesPoints || 0),
     datouTeamPoints: Number(match.datouTeamPoints || 0),
     mixedDoublesPoints: Number(match.mixedDoublesPoints || 0),
+    mixedTeamPoints: Number(match.mixedTeamPoints || 0),
     photos: Array.isArray(match.photos) ? match.photos : [],
     conflicts: Array.isArray(match.conflicts) ? match.conflicts : []
   };

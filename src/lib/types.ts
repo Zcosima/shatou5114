@@ -24,6 +24,8 @@ export type MatchRecord = {
 
   mixedDoublesResult: string;
   mixedDoublesPoints: number;
+  mixedTeamResult: string;
+  mixedTeamPoints: number;
 
   notes: string;
   photos: string[];
@@ -55,6 +57,6 @@ export type RawMatchResult = {
   date: string;
   eventName: string;
   athlete: "shasha" | "datou" | "mixed";
-  category: "女单" | "女双" | "男单" | "男双" | "混双" | "女团" | "男团";
+  category: "女单" | "女双" | "男单" | "男双" | "混双" | "混团" | "女团" | "男团";
   result: string;
 };

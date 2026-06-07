@@ -221,10 +221,12 @@ function HomeView({ onGoMatches }: { onGoMatches: () => void }) {
 
 function getMetricFontSize(value: number) {
   const digits = String(Math.abs(Math.trunc(value))).length;
-  if (digits <= 3) return 48;
-  if (digits === 4) return 42;
-  if (digits === 5) return 36;
-  return 30;
+  if (digits <= 2) return 48;
+  if (digits === 3) return 42;
+  if (digits === 4) return 34;
+  if (digits === 5) return 28;
+  if (digits === 6) return 24;
+  return 20;
 }
 
 function HomeMetric({ icon, value, label }: { icon: string; value: number; label: string }) {
@@ -233,8 +235,8 @@ function HomeMetric({ icon, value, label }: { icon: string; value: number; label
       <div className="min-w-0 w-full">
         <div className="text-3xl">{icon}</div>
         <p
-          className="mx-auto mt-4 max-w-full overflow-hidden text-ellipsis whitespace-nowrap text-center font-semibold leading-none text-[var(--ink)]"
-          style={{ fontSize: `${getMetricFontSize(value)}px` }}
+          className="mx-auto mt-4 block max-w-full whitespace-nowrap text-center font-semibold leading-none text-[var(--ink)]"
+          style={{ fontSize: `${getMetricFontSize(value)}px`, fontVariantNumeric: "tabular-nums" }}
           title={String(value)}
         >
           {value}

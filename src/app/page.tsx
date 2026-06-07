@@ -219,13 +219,27 @@ function HomeView({ onGoMatches }: { onGoMatches: () => void }) {
   );
 }
 
+function getMetricFontSize(value: number) {
+  const digits = String(Math.abs(Math.trunc(value))).length;
+  if (digits <= 3) return 48;
+  if (digits === 4) return 42;
+  if (digits === 5) return 36;
+  return 30;
+}
+
 function HomeMetric({ icon, value, label }: { icon: string; value: number; label: string }) {
   return (
-    <article className="card grid min-h-36 place-items-center rounded-[24px] p-4 text-center">
-      <div>
+    <article className="card grid min-h-36 min-w-0 place-items-center rounded-[24px] p-3 text-center">
+      <div className="min-w-0 w-full">
         <div className="text-3xl">{icon}</div>
-        <p className="mt-4 text-4xl font-semibold text-[var(--ink)]">{value}</p>
-        <p className="mt-3 text-sm text-[var(--cocoa)]">{label}</p>
+        <p
+          className="mx-auto mt-4 max-w-full overflow-hidden text-ellipsis whitespace-nowrap text-center font-semibold leading-none text-[var(--ink)]"
+          style={{ fontSize: `${getMetricFontSize(value)}px` }}
+          title={String(value)}
+        >
+          {value}
+        </p>
+        <p className="mt-3 truncate text-sm text-[var(--cocoa)]">{label}</p>
       </div>
     </article>
   );
